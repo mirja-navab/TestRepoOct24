@@ -1,4 +1,177 @@
-Hi Team, Today I have started to learn Git & Github
-I have installed git windows desktop and git bash
-Hi nawab mirza
-Hi nimra baby
+**To Check Docker image:-
+#docker images
+#docker image ls
+___________________________________________________________________________
+**How to pull docker image:-
+#docker pull centos
+_____________________________________________________________________
+
+***How to Create a container (or) machine:-
+#docker run -it  -d  --name   vm1   centos
+
+where,
+it=interact terminal
+d=detached mode
+vm1=container name
+centos=image name
+_________________________________________________________________
+**To check running container:-
+#docker ps
+__________________________________________________
+**To check running & existed both container:-
+#docker ps -a
+_____________________________________________________________________
+**How to stop docker:-
+#docker stop image name
+_________________________________________________
+**How to start docker:-
+#docker start image name
+__________________________________________________________________
+**How to restart docker:-
+#docker restart image name
+___________________________________________________________________
+***How to create container:-
+#docker run -it -d --name vm1 centos
+____________________________________________________________
+**How to login in container:-
+#docker exec -it vm1 bash
+____________________________________________________________
+***How to create container in publically:-
+#docker run -it -d --name vm1 -p 80:80 centos
+where,
+80:80=host port:node port
+________________________________________________________
+***How to remove container:-
+#docker rm vm1
+_______________________________________________________________
+**How to remove running container:-
+#docker run vm1 -f
+_________________________________________________________________________
+***How to remove docker images:-
+#docker rmi centos
+(or)
+#docker rmi ubuntu
+____________________________________________________________________________
+20  ping www.google.com
+   21  docker ps -a
+   22  docker ps
+   23  docker image
+   24  docker images
+   25  docker image ls
+   26  docker ps
+   27  docker ps -a
+   28  docker start test-vm 
+   29  docker start vm1
+   30  docker ps -a
+   31  docker images
+   32  docker rmi centos
+   33  docker rmi amazonlinux:latest 
+   34  docker images
+   35  docker ps -a
+   36  docker rmi almalinux:latest 
+   37  docker ps -a
+   38  docker images
+   39  #docker run -it -d --name public-vm -p 8003:80 ubuntu
+   40  netstat -tunlp | grep 8003
+   41  docker run -it -d --name public-vm -p 8003:80 ubuntu
+   42  docker ps -a
+   43  docker exec -it public-vm bash
+   44  docker ps -a
+   45  docker exec -it public-vm  bash
+   46  docker ps -a
+   47  docker ps
+   48  docker run -it -d --name  test-vm2 -p 8004:80 ubuntu
+   49  docker ps -a
+   50  docker rm test-vm2
+   51  docker stop test-vm2
+   52  docker ps -a
+   53  docker rm test-vm2
+   54  docker ps -a
+   55  docker ps
+   56  docker pull mysql
+   57  docker ps -a
+   58  docker images
+   59* 
+   60  docker ps -a
+   61  docker rm mysqldb
+   62  docker ps -a
+   63  docker run -it -d --name mysqldb mysql
+   64  docker ps 
+   65  docker ps -a
+   66  docker start mysqldb
+   67  docker ps -a
+   68  docker inspect mysqldb
+   69  docker ps 
+   70  docker logs mysqldb
+   71  docker ps 
+   72  docker rm mysqldb
+   73  docker run -it -d --name db-vm1 -e MYSQL_ROOT_PASSWORD=123 mysql
+   74  docker ps -a
+   75  docker logs mysqldb
+   76  docker logs db-vm1 
+   77  docker ps -a
+   78  docker exec -it db-vm1 bash
+   79  docker ps -a
+   80  docker inspect db-vm1 
+   81  ll
+   82  docker ps -a
+   83  docker exec -it db-vm1 bash
+   84  history
+85  docker ps -a
+   86  docker exec -it vm1 bash
+   87  docker rm vm1 -f
+   88  docker ps -a
+   89  docker images
+   90  docker ps -a
+   91  docker exec -it db-vm1 bash
+   92  docker ps -a
+   93  systemctl restart docker.service 
+   94  docker ps -a
+   95  docker start db-vm1 
+   96  docker start public-vm 
+   97  docker ps -a
+   98  docker images
+   99  docker run -it --name vm1 archlinux
+  100  docker ps -a
+  101  docker start vm1
+  102  docker ps -a
+  103  docker exec -it vm1 bash
+  104  docker rm vm1 -f
+  105  docker ps -a
+  106  mkdir /demo
+  107  cd /de
+  108  cd demo
+  109  cd /demo
+  110  ls
+  111  cd
+  112  docker run -it -d --name storage-vm  -v /demo:/mnt archlinux
+  113  docker ps -a
+  114  docke ps -a
+  115  docker ps -a
+  116  docker inspect storage-vm 
+  117  docker exec -it storage-vm bash
+  118  docker rm storage-vm -f
+  119  docker run -it -d --name storage-vm  -v /demo:/mnt:Z  archlinux
+  120  docker ps -a
+  121  docker exec -it storage-vm bash
+  122  docker ps -a
+  123  docker rm storage-vm -f 
+  124  docker ps
+  125  cd /demo
+  126  ls
+  127  cd 
+  128  date
+  129  docker run -it -d --name stg-vm3 -v /demo:/cloud:Z archlinux
+  130  docker exec -it stg-vm3 bash
+  131  history
+
+
+############################################# MySQL Container ###########################
+
+# docker run --name p-mysql -e MYSQL_ROOT_PASSWORD=nawab -p 3232:3306 -d mysql:5.6
+
+# docker logs p-mysql
+# docker exec -it p-mysql bash
+# mysql -uroot -pnawab
+mysql> show database
+
