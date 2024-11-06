@@ -1,0 +1,32 @@
+ ping www.google.com
+   21  docker ps -a
+   22  docker ps
+   23  docker image
+   24  docker images
+   25  docker image ls
+   26  docker ps
+   27  docker ps -a
+   28  docker start test-vm
+   29  docker start vm1
+   30  docker ps -a
+   31  docker images
+   32  docker rmi centos
+   33  docker rmi amazonlinux:latest
+   34  docker images
+   35  docker ps -a
+   36  docker rmi almalinux:latest
+   37  docker ps -a
+   38  docker images
+   39  #docker run -it -d --name public-vm -p 8003:80 ubuntu
+   40  netstat -tunlp | grep 8003
+   41  docker run -it -d --name public-vm -p 8003:80 ubuntu
+   42  docker ps -a
+   43  docker exec -it public-vm bash
+   44  docker ps -a
+   45  docker exec -it public-vm  bash
+   46  docker ps -a
+   47  docker ps
+   48  docker run -it -d --name  test-vm2 -p 8004:80 ubuntu
+file.txt [unix] (10:41 06/11/2024)                                                                                             54,1 33%
+
+
