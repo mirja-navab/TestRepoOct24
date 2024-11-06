@@ -1,13 +1,127 @@
-$ git log
-commit 58c3458decead9be80cabb68a0ed30b9e4859dbd (HEAD -> master)
-Author: mirja-navab <mohammednawab01@gmail.com>
-Date:   Sat Nov 2 15:56:05 2024 +0530
 
-    I have added new content
 
-commit e30d8a539d88ec43de278aa2c8ecc52e048931b3
-Author: mirja-navab <mohammednawab01@gmail.com>
-Date:   Sat Nov 2 15:45:36 2024 +0530
+1. Preparation
+RUN: 
+git config --global user.name "Your Name" 
+git config --global user.email "your_email@whatever.com"
 
-    Initial commit
+RUN: 
+git config --global core.autocrlf input
+ git config --global core.safecrlf warn
 
+RUN: 
+git config --global core.autocrlf true 
+git config --global core.safecrlf warn
+
+3. Creating a Project
+
+RUN: 
+mkdir hello 
+cd hello 
+touch hello.html
+
+RUN: 
+git init
+
+RUN: 
+git add hello.html 
+git commit -m "First Commit"
+
+4. Checking the status of the repository
+
+RUN: 
+git status
+
+5.Making changes
+
+FILE: HELLO.HTML 
+<h1>Hello, World!</h1>
+ Checking the status 
+Check the working directory’s status.
+
+RUN: 
+git status 
+You will see
+
+6.Staging the changes
+
+RUN: 
+git add hello.html
+ git status
+You will see …
+
+7.Staging and committing
+
+git add a.html 
+git add b.html 
+git commit -m "Changes for a and b" 
+git add c.html 
+git commit -m "Unrelated change to c"
+
+8.Commiting the changes
+
+RUN: git commit
+
+Checking the status
+
+RUN: 
+git status
+9.Changes, not files
+
+RUN: 
+git add hello.html
+
+RUN: 
+git status
+
+RUN: 
+git commit -m "Added standard HTML page tags" 
+git status
+
+RUN: git add . 
+git status
+
+RUN: 
+git commit -m "Added HTML header"
+
+10.History
+
+RUN: 
+git log
+
+RUN:
+ git log --pretty=oneline
+RUN:
+git log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short
+
+11.Goals
+RUN: 
+git config --global alias.co checkout 
+git config --global alias.ci commit 
+git config --global alias.st status 
+git config --global alias.br branch
+git config --global alias.hist "log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short" 
+git config --global alias.type 'cat-file -t' 
+git config --global alias.dump 'cat-file -p'
+
+12.Getting older versions
+
+RUN: 
+git hist
+
+RUN: 
+git checkout <hash>
+ cat hello.html
+
+RUN: 
+git checkout master 
+cat hello.html
+
+13.Tagging versions
+
+RUN: 
+git tag v1
+
+RUN: 
+git checkout v1^ 
+cat hello.html
