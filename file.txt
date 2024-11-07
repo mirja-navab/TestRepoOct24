@@ -1,4 +1,79 @@
-Hi Team, Today I have started to learn Git & Github
-I have installed git windows desktop and git bash
-Hi nawab mirza
-Hi nimra baby
+1. Preparation
+RUN: 
+git config --global user.name "Your Name" 
+git config --global user.email "your_email@whatever.com"
+
+RUN: 
+git config --global core.autocrlf input
+ git config --global core.safecrlf warn
+
+RUN: 
+git config --global core.autocrlf true 
+git config --global core.safecrlf warn
+
+3. Creating a Project
+
+RUN: 
+mkdir hello 
+cd hello 
+touch hello.html
+
+RUN: 
+git init
+
+RUN: 
+git add hello.html 
+git commit -m "First Commit"
+
+4. Checking the status of the repository
+
+RUN: 
+git status
+
+5.Making changes
+
+FILE: HELLO.HTML 
+<h1>Hello, World!</h1>
+ Checking the status 
+Check the working directory’s status.
+
+RUN: 
+git status 
+You will see
+
+6.Staging the changes
+
+RUN: 
+git add hello.html
+ git status
+You will see …
+
+7.Staging and committing
+
+git add a.html 
+git add b.html 
+git commit -m "Changes for a and b" 
+git add c.html 
+git commit -m "Unrelated change to c"
+
+8.Commiting the changes
+
+RUN: git commit
+
+Checking the status
+
+RUN: 
+git status
+
+9.Changes, not files
+
+RUN: 
+git add hello.html
+
+RUN: 
+git status
+
+RUN: 
+git commit -m "Added standard HTML page tags" 
+git status
+
