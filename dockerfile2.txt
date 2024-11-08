@@ -1,0 +1,270 @@
+Docker Volume
+=============
+To add existing container we use connect command, one container we can add to multiple networks.
+docker network connect demo-network a-centos
+
+Step 1 — Creating an Independent Volume
+docker volume create mydata
+
+Step 2---list of all the volumes created and their driver
+docker volume ls
+
+step 3 ---Get details of the volume
+docker volume inspect mydata
+
+Step 4: removing volumes
+docker volume rm mydata
+
+Demo
+docker run --name MyJenkins1 -v mydata:/var/jenkins_home -p 8080:8080 -p 50000:50000  -d jenkins/jenkins
+docker logs MyJenkin1
+
+
+docker run --name MyJenkins2 -v mydata:/var/jenkins_home -p 9090:8080 -p 60000:50000 jenkins/jenkins
+
+
+Example MySQL
+docker volume create mysql_data
+docker run --name p-mysql -e MYSQL_ROOT_PASSWORD=manisha -p 3232:3306 -d -v mysql_data:/var/lib/mysql mysql:5.6
+docker exec -it p-mysql 
+#mysql -uroot -pmanisha
+
+docker run --name q-mysql -e MYSQL_ROOT_PASSWORD=manisha -p 3231:3306 -d -v mysql_data:/var/lib/mysql 
+
+docker rm p-MySQL
+docker exec -it q-MySQL 
+MySQL -uroot -pmanisha
+show databases; ---test db is available
+create database test;
+use test;
+create table sample(id int,name varchar(20));
+insert into sample values (1,'Sam');
+select * from sample-- Table is available in q-MySQL container
+
+
+
+
+
+
+Docker Security
+==================
+
+Namespaces: Docker uses namespaces to isolate containers. Each container has its own set of namespaces, which includes process IDs, network, and file systems, making the container appear to have its own environment.
+•	Docker automatically handles namespace isolation, but you can see which namespaces a container uses by running the following:
+
+•docker run -d --name mynginx nginx
+•docker inspect --format="{{.State.Pid}}" mynginx
+
+Control Groups (cgroups): Cgroups limit and prioritize resource usage (CPU, memory, disk I/O, etc.) for containers. This prevents a container from monopolizing system resources and ensures resource allocation is contained within set limits.Control groups (cgroups) are a Linux kernel feature used in Docker to limit, prioritize, and account for resource usage (such as CPU, memory, I/O) by containers. 
+
+ex for cpu limit
+=====================
+docker run -it --name limited_cpu_container --cpus="0.5" ubuntu /bin/
+
+In this example:
+--cpus="0.5" limits the container to use half of a CPU core
+to verify the cpu limit in place 
+docker verify limited_cpu_container
+
+check for Nanocpu in hostconfig
+
+
+For Linux
+==========
+
+You can verify that the CPU limit is in place by checking the container’s cgroup settings in the /sys/fs/cgroup/cpu/ directory. For example:
+
+
+docker inspect --format="{{.State.Pid}}" limited_cpu_container
+This will give you the container’s PID. You can then check the cgroup settings like this:
+
+cat /sys/fs/cgroup/cpu/docker/<container_id>/cpu.cfs_quota_us
+This file will show the CPU quota in microseconds. A value of 50000 means the container is limited to 50% of a CPU core.
+
+
+Ex for memory limit
+====================
+docker run -it --name limited_mem_container --memory="256m" ubuntu /bin/
+•	--memory="256m" limits the container’s memory usage to 256 MB.
+docker inspect limited_mem_container
+
+check for Memory 
+
+You can combine both CPU and memory limits in one Docker run command. For example:
+==================================================================================
+docker run -it --name limited_resources_container --cpus="1" --memory="512m" ubuntu /bin/
+docker inspect limited_resources_container
+
+Capability restriction:
+By default container has root privileges Use the --cap-drop flag to remove capabilities that are not needed by the container, reducing the attack surface.
+1.docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE my-container
+2.docker run --cap-drop=NET_ADMIN my-container
+
+Let’s say you want to start a container without the capability to modify the system time. You can remove this capability by using the --cap-drop option as follows:
+docker run --cap-drop SYS_TIME alpine date
+
+In this command:
+docker run starts a new container.
+--cap-drop SYS_TIME removes the SYS_TIME capability, which prevents the container from setting or changing the system time.
+alpine specifies the container image.
+date is the command executed inside the container.
+
+In Linux, capabilities allow processes to perform privileged operations without requiring full root privileges. Some examples of capabilities include:
+
+NET_ADMIN: Network administration (e.g., managing interfaces).
+SYS_TIME: Setting system time.
+CHOWN: Changing ownership of files.
+docker run --cap-drop NET_ADMIN --cap-drop SYS_ADMIN --cap-drop SYS_TIME alpine
+
+
+Non root user:
+==============
+
+Dockerfile
+# Start with a basic Alpine image
+FROM alpine
+
+# Add a new user (named "appuser" with no password)
+RUN adduser -D appuser
+
+# Switch to the new non-root user
+USER appuser
+
+# Set a default command
+CMD ["echo", "Hello from a non-root user!"]
+
+docker build -t non-root-example .
+docker run --rm non-root-example whoami
+====================================
+
+Kernel Security Modules
+Docker integrates with Linux kernel security modules like AppArmor, SELinux, and Seccomp to enforce additional security controls
+AppArmor/SELinux: These are Mandatory Access Control (MAC) frameworks that limit the access and capabilities of containers. They restrict what files and processes a container can access on the host.
+AppArmor is often used in Ubuntu and Debian-based systems.
+
+SELinux is commonly used in Red Hat-based systems.
+
+docker run --security-opt apparmor=docker-default my-container
+
+Seccomp: The Seccomp (Secure Computing Mode) profile restricts the system calls that containers can make. Docker comes with a default Seccomp profile that blocks 44 potentially dangerous system calls, further reducing the attack surface.
+Read-Only Filesystem
+You can configure your container's filesystem to be read-only, reducing the risk of unauthorized modifications.
+Best Practice: Use the --read-only flag to ensure the container's filesystem is immutable.
+Example:
+docker run --read-only my-container
+Read-Only Filesystem
+Example:
+docker run --read-only my-container
+Network Security
+Example:
+docker network create --driver=bridge my_network
+docker run --network=my_network my-container
+
+Regular Updates
+Security patches for Docker, host OS, and containers are released regularly.
+
+secrete file example
+=====================
+Step 1: Enable Docker Swarm Mode
+Docker secrets work only in Swarm mode, so if Swarm hasn’t been initialized yet, initialize it with:
+
+
+docker swarm init --advertise-addr=192.16.0.9
+Step 2: Create a Secret File
+Create a file named my_secret.txt containing the sensitive data you want to pass to the container. For example:
+
+
+echo "supersecretpassword" > my_secret.txt
+This file contains the password or any other sensitive data you want to manage securely.
+
+Step 3: Create a Docker Secret from the File
+Use the docker secret create command to create a Docker secret based on this file:
+
+
+docker secret create my_secret_password my_secret.txt
+This creates a secret named my_secret_password, which Docker securely stores for use in services.
+
+Step 4: Create a Docker Service that Uses the Secret
+In this example, we’ll use an nginx container to show how a secret is injected into a container. You can adapt this to other applications as needed.
+
+
+
+docker service create \
+    --name nginx_service \
+    --secret my_secret_password \
+    nginx:latest
+This command:
+
+Creates a service named nginx_service with the nginx image.
+Injects the my_secret_password secret into the container.
+Step 5: Access the Secret Inside the Container
+The secret will be mounted inside the container at /run/secrets/my_secret_password. You can inspect it by connecting to the container and reading the file:
+
+
+docker exec -it $(docker ps -q -f name=nginx_service) cat /run/secrets/my_secret_password
+This should display:
+
+supersecretpassword
+
+Example with MySQL
+=======================
+Step 1: Create the MySQL Root Password Secret
+If you haven’t already created a Docker secret for the MySQL root password, you can do so like this:
+
+
+
+echo "supersecretpassword" | docker secret create mysql_root_password -
+This command creates a Docker secret named mysql_root_password with the specified password.
+
+Step 2: Run the MySQL Container with Root Database Access
+Now, run the MySQL container with the MYSQL_ROOT_PASSWORD_FILE environment variable, which tells MySQL to use the password in the secret file for the root user.
+
+
+
+docker service create \
+  --name mysql_container \
+  --secret mysql_root_password \
+  --env MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password \
+  mysql:latest
+Explanation
+--secret mysql_root_password: Injects the secret into the container at /run/secrets/mysql_root_password.
+MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password: Configures MySQL to use the root password specified in the secret file.
+With this setup:
+
+MySQL is started with the root database user enabled, using the password provided by the Docker secret.
+You can log in to MySQL as the root user using supersecretpassword or whichever password you’ve stored in the mysql_root_password secret.
+Step 3: Access the MySQL Container as Root
+To connect to the MySQL server as the root database user from within the container:
+
+Get the container ID:
+
+
+docker ps -q -f name=mysql_container
+Connect to the MySQL CLI as the root user:
+
+
+docker exec -it <container_id> mysql -uroot -p
+Enter the root password when prompted (supersecretpassword).
+
+
+ReadOnlyFile Example
+==========================
+
+When you run a container with a read-only filesystem (--read-only), some applications may require specific directories to be writable (such as directories used for logs or temporary files). The default nginx container, for instance, tries to write to specific directories like /var/cache/nginx and /var/run.
+
+To resolve this, you can mount writable volumes on specific directories needed by nginx while keeping the rest of the filesystem read-only.
+
+docker run -it  --name readonly_nginx   --read-only  -p 8080:80 \
+-v /tmp/nginx-cache:/var/cache/nginx \
+  -v /tmp/nginx-pid:/var/run \
+nginx
+ \
+  readonly-nginx
+
+
+This setup allows nginx to write only to /var/cache/nginx and /var/run while the rest of the filesystem remains read-only.
+
+docker exec -it readonly_nginx 
+echo "Attempting to write" > /usr/share/nginx/html/test.txt
+
+error will come
