@@ -1,13 +1,222 @@
-$ git log
-commit 58c3458decead9be80cabb68a0ed30b9e4859dbd (HEAD -> master)
-Author: mirja-navab <mohammednawab01@gmail.com>
-Date:   Sat Nov 2 15:56:05 2024 +0530
+Day1:
 
-    I have added new content
+Docker Hub 
+Amazon Elastic Container Registry (ECR):
+Google Container Registry (GCR):
+Azure Container Registry (ACR):
+GitHub Container Registry (GHCR):
 
-commit e30d8a539d88ec43de278aa2c8ecc52e048931b3
-Author: mirja-navab <mohammednawab01@gmail.com>
-Date:   Sat Nov 2 15:45:36 2024 +0530
+Docker Basic commands
+Basic
+•	docker version
+•	docker -v 
+•	docker info
+•	docker --help
 
-    Initial commit
+————————————
+Images
+docker images                        To list the images
+docker images -q                     To list the images
+docker pull                          To pull tha image
+docker rmi                           To remove one or more iamges
+docker rmi $(docker images -q)       To remove all images
+
+————————————
+Containers
+: docker ps                                                 shows only running cotainers(use -a for show all 
+: docker ps -a                                              shows all containers
+
+Creating a container for centos image
+1.	docker pull centos
+2.	docker container create -it centos
+3.	docker container create --name x-centos -it centos
+4.	docker start 78fe27c48514<containe id>
+5.	docker start x-centos
+6.	docker exec -it <container id/name> /bin/bash
+7.	docker exec -it  <container id/name> bash
+	docker exec -it  a-centos bash
+8.	docker stop a-centos
+9.	docker stop <container id/name>
+Docker container for nginx:
+docker pull nginx
+docker container create --name b-nginx -p 1111:80 -it nginx 
+
+docker start b-nginx
+docker exec -it b-nginx bash
+echo "<h1>Hello A-NgInx Server </h1>" > /usr/share/nginx/html/index.html
+localhost:1111
+docker stop b-nginx
+docker rm b-nginx
+docker rmi <imageid>
+docker run -it --name b-nginx -p 1111:80 -it nginx 
+docker run -it --name c-nginx -p 2222:80 -it nginx 
+Removing image and containers:
+Containers:
+docker rm container id/name>   removes container
+docker rm $(docker ps -a -q)       Removes all containers
+docker rm -f $(docker ps -a -q)   	force removed 
+Images:
+docker rmi <image id> Removes an image
+docker rmi $(docker images -q) Removes all images
+
+docker login <registry_url>
+docker pull <registry_url>/<image_name>:<tag>
+docker tag <local_image>:<tag> <registry_url>/<image_name>:<tag>
+
+Day2:
+Docker run:
+
+docker run <image-name>  create a container from image (first time used to container)
+: docker run -d <image-name>                                create a container from image in detached mode
+: docker run -it <image-name> bash                          create a container from image in interactive mode
+: docker start -i <container-name>                          To start the stoped container
+: docker stop <container-name>                              To stop running container
+: docker logs <container-name>                              To  logs of container
+: docker exec -it <container-name> bash                     To interact with container
+:docker run --name a-centos -it centos bash  
+docker run --name a-nginx -it nginx bash          -->    container will not be removed on exit, if image is not present it will pull the image and create container.
+:docker start -i a-centos
+
+:docker run --name b-centos --rm -it centos bash        --> 
+
+Port forwarding in Docker, also known as port mapping, allows you to expose network ports from your Docker containers to the host system or to the external network. This enables you to access services running inside containers from outside the container environment.
+
+docker run -p host_port:container_port image_name
+docker run -p 1111:80 nginx
+This command starts a container using the Nginx image and forwards requests from port 1111 on the host to port 80 inside the container.
+
+Nginx container
+Docker run -it –name a-nginx -p 1111:80 nginx bash
+Docker start a-nginx
+docker exec -it a-nginx bash 
+echo "<h1>Hello A-NgInx Server </h1>" > /usr/share/nginx/html/index.html
+
+MySQL Container
+================
+docker run --name p-mysql -e MYSQL_ROOT_PASSWORD=manisha -p 3232:3306 -d mysql:5.6
+docker logs p-mysql
+docker exec -it p-mysql bash
+#mysql -uroot -pmanisha
+mysql> show databases
+
+docker network --help
+docker network ls
+create 2 containers 
+docker run --name a-centos -it centos
+docker run --name b-centos -it centos
+docker ps -a
+docker start a-centos
+docker start b-centos
+docker inspect bridge
+
+communicate between containers.
+
+docker exec -it a-centos bash
+# ping 172.17.0.2(ip of b-centos)
+
+custom default bridge network
+==============================
+docker network create demo-network  -->default will create bridge network
+docker network create demo-network 
+docker run --name c-centos --network demo-network -it centos bash 
+docker run --name d-centos --network demo-network -it centos bash
+
+docker start c-centos d-centos
+docker ps --shows all 4 conta
+docker  network inspect demo-network--->(c,d)
+docker network inspect ---->(a,b) 172.17 is default
+
+
+docker exec --it c-centos bash
+ping d-centos  -->will able to communicate with ip and container name
+
+
+docker network disconnect demo-network  c-centos
+$ docker network connect n1 c-centos;
+
+Day 3:
+To add existing container we use connect command, one container we can add to multiple networks.
+docker network connect demo-network a-centos
+
+Step 1 — Creating an Independent Volume
+docker volume create mydata
+
+Step 2---list of all the volumes created and their driver
+docker volume ls
+
+step 3 ---Get details of the volume
+docker volume inspect mydata
+
+Step 4: removing volumes
+docker volume rm mydata
+
+Demo
+docker run --name MyJenkins1 -v mydata:/var/jenkins_home -p 8080:8080 -p 50000:50000  -d jenkins/jenkins
+docker logs MyJenkin1
+
+
+docker run --name MyJenkins2 -v mydata:/var/jenkins_home -p 9090:8080 -p 60000:50000 jenkins/jenkins
+
+
+
+
+docker run -d , -it
+docker network 
+bridge , custom bridge
+volume 50 %  
+
+
+Docker compose
+Step 1 : install docker compose
+   (already installed on windows and mac with docker)
+   docker-compose -v
+
+   2 Ways
+
+   1.  https://github.com/docker/compose/rel...
+
+   2. Using PIP
+    pip install -U docker-compose
+
+Step 2 : Create docker compose file at any location on your system
+   docker-compose.yaml
+
+version: '3'
+services:
+  web:
+    image: nginx
+  database:
+    image: redis
+
+
+Step 3 : Check the validity of file by command
+    docker-compose config  :check syntax of yaml file.
+
+
+docker network ls
+there is no "root_default" now execute the below it should create this network
+
+Step 4 : Run docker-compose.yaml file by command
+   docker-compose up -d
+$docker ps
+$docker inspect network root_default
+
+so docker-compose internally creates a custom bridge network.
+ Note :
+Steps 5 : Bring down application by command
+ $  docker-compose down
+ $docker inspect network root-default
+
+TIPS
+How to scale services
+
+scale
+docker-compose up -d --scale database=4
+
+docker-compose up -d --scale web=4
+
+
+
+
+
 
