@@ -1,0 +1,17 @@
+Installation sonarqube enterises 
+
+
+sudo apt update
+sudo apt install openjdk-11-jdk
+sudo apt install postgresql postgresql-contrib
+sudo -u postgres psql
+CREATE USER sonar WITH PASSWORD 'sonar_password';
+CREATE DATABASE sonar OWNER sonar;
+GRANT ALL PRIVILEGES ON DATABASE sonar TO sonar;
+\q
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.7.1.62043.zip
+unzip sonarqube-9.7.1.62043.zip
+sudo mv sonarqube-9.7.1.62043 /opt/sonarqube
+sudo chown -R $USER:$USER /opt/sonarqube
+cd /opt/sonarqube/conf
+sonar.properties
